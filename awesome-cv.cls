@@ -314,7 +314,7 @@
 
 % Defines writer's linked-in (optional)
 % Usage: \linkedin{<linked-in-nick>}
-\newcommand*{\linkedin}[1]{\def\@linkedin{#1}}
+\newcommand*{\linkedin}[2]{\def\@linkedin{#1}\def\@linkedinname{#2}}
 
 % Defines writer's stackoverflow profile (optional)
 % Usage: \stackoverflow{<so userid>}{<so username>}
@@ -478,7 +478,7 @@
               \setbool{istart}{false} 
             }
             {\@headersocialsep}
-          \href{https://www.linkedin.com/in/\@linkedin}{\faLinkedinSquare\ \@linkedin}
+          \href{https://www.linkedin.com/in/\@linkedin}{\faLinkedinSquare\ \@linkedinname}
         }
       \ifthenelse{\isundefined{\@twitter}}
         {}
