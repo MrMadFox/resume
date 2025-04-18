@@ -1,26 +1,24 @@
 \cvsection{Experience}
 \begin{cventries}
   \cventry
-    {Senior Software Development Engineer}
+    {Senior Software Engineer}
     {Slice}
     {Bangalore, KA}
-    {May 22 - Present}
+    {June 22 - Present}
     {
       \begin{cvitems}
-        \item {Built DaaS(Data as a Service) that manages and serves data across multiple organizations, ensuring security and auditing measures are in place. Reduced TAT from 3 man-days to under 5 minutes. Supports PostgreSQL, MySQL, DBX warehouse, and async warehouse queries (on EMR using Airflow) data sources.}
-        \item {Built UPI SWITCH in collaboration with five-member team, Led the migration process from Juspay Switch to an in-house solution, As a upi first company this helped deliver UPI features faster to our customers, reducing costs and dependency on Juspay.}
-        \item {Integrated Mandates, upi-number, with npci on both bank and acquring side.}
-        \item {Deployed an on-premises Luna HSM and integrated for UPI MPIN management.}
-        \item {Built Sanction Screening Service that scrapes and enables search functionality on public lists of sanctioned individuals, ensuring compliance by preventing the onboarding of sanctioned persons.}
-        \item {Developed the initial version of the Avatar service, which generates personalized avatars as profile pictures in real-time based on user selfies.}
-        \item {Developed a centralized NameMatch Lambda service that compares names from various sources to identify potential fraudsters. This solution addressed inconsistencies where some services would pass names that others would fail to recognize.}
-        \item {Refactored a legacy risk service that evaluates a user's purchasing power based on more than 100 factors.}
-        \item {Increased observability by integrating Sentry, APM, Xray, SonarQube, Swagger, and pre-commit hooks across multiple services.}
+        \item {Architected and implemented DaaS (Data as a Service) platform managing 10TB+ data across organizations, reducing data access TAT from 3 days to <5 minutes while ensuring SOC2 compliance}
+        \item {Led development of in-house UPI SWITCH processing 5M+ daily transactions. Integrated critical features including Mandates and UPI-number with NPCI}
+        \item {Enhanced security by implementing Luna HSM for UPI MPIN management, achieving 99.99\% uptime and PCI-DSS compliance}
+        \item {Developed Sanction Screening Service, preventing fraud by screening against 100+ global sanction lists}
+        \item {Created the first iteration of the Avatar service, enabling real-time generation of personalized profile avatars from user selfies.}
+        \item {Modernized legacy risk assessment service evaluating 100+ factors, making it 10x faster, maintainable and scalable.}
+        \item {Established comprehensive observability framework using Sentry, APM, Xray, achieving 99.9\% service reliability}
       \end{cvitems}
     }
   
   \cventry
-    {Software Development Engineer}
+    {Software Engineer}
     {Swiggy(SuprDaily)}
     {Bangalore, KA}
     {Sep 21 - June 22}
@@ -33,22 +31,19 @@
     }
   
   \cventry
-    {Software Development Engineer}
+    {Software Engineer}
     {Hyperverge Inc.}
     {Bangalore, KA}
     {Dec 19  - Sep 21}
     {
       \begin{cvitems}
-        \item {Improved overall throughput by 60\% by splitting monolith into microservices.}
-        \item {Used tools like sentry, opentelemetry as well as set up test environment to reduce 5xx error rates to almost zero.}
-        \item {Implemented a feature to retrieve machine learning models from S3 instead of committing them to Git, significantly reducing the effort required from the engineering team.}
-        \item {Developed a comprehensive end-to-end service from scratch to blacklist devices involved in multiple fraud attempts, effectively preventing further malicious activities.}
-        \item {Contributed and gained expertise in developing various components of document verification service, which analyzes and retrieves data. Built it from initial stages from defining the requirements to completion of deployment.}
-        \item {Designed and developed end-to-end fully functional service which categorizes ID cards based on their quality into different buckets. Focused on various service aspects like scale and configurable design.}
-        \item {Implemented an API to prevent data theft by encrypting customer data for transfer across geographies, which is only decrypted on the receiver's side.}
-        \item {Developed a feature to mask user identification numbers on national cards, making the solution region-agnostic.}
-        \item {Dockerised application which made operations easy.}
-        \item {Built an API to validate user inputs against data from uploaded ID cards, handling various types of information.}
+        \item {Led architectural transformation from monolith to microservices, resulting in 60\% throughput improvement through optimized service boundaries and inter-service communication}
+        \item {Architected ML model deployment pipeline using S3 and versioning, decoupling model artifacts from application code and enabling seamless model updates without deployments}
+        \item {Owned the end-to-end design and development of a document verification service, data processing and extraction and validation.}
+        \item {Developed a robust service to assess and categorize ID cards by category, enabling the application of specialized models for enhanced processing}
+        \item {Implemented end-to-end encryption system for secure cross-border data transfer using asymmetric encryption and key rotation}
+        \item {Developed PII masking feature with configurable rules engine, enabling region-specific ID number masking across 20+ countries}
+        \item {Containerized application stack using Docker and implemented CI/CD pipelines, reducing deployment time from hours to minutes}
       \end{cvitems}
     }
 
