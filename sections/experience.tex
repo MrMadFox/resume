@@ -8,12 +8,13 @@
     {
       \begin{cvitems}
         \item {Architected and implemented DaaS (Data as a Service) platform managing 10TB+ data across organizations, reducing data access TAT from 3 days to <5 minutes while ensuring SOC2 compliance}
-        \item {Led development of in-house UPI SWITCH processing 5M+ daily transactions. Integrated critical features including Mandates and UPI-number with NPCI}
-        \item {Enhanced security by implementing Luna HSM for UPI MPIN management, achieving 99.99\% uptime and PCI-DSS compliance}
+        \item {Led development of in-house UPI SWITCH processing 5M+ daily upi transactions, Integrated critical features including Mandates and UPI-number with NPCI}
+        \item {Deployed and Integrated a multi-region on-premises HSM solution for UPI MPIN management, ensuring high availability and disaster recovery}
+        \item {Engineered a memory-efficient UPI VPA blacklist feature using a bloom filter to enhance fraud prevention measures}
         \item {Developed Sanction Screening Service, preventing fraud by screening against 100+ global sanction lists}
         \item {Created the first iteration of the Avatar service, enabling real-time generation of personalized profile avatars from user selfies.}
         \item {Modernized legacy risk assessment service evaluating 100+ factors, making it 10x faster, maintainable and scalable.}
-        \item {Established comprehensive observability framework using Sentry, APM, Xray, achieving 99.9\% service reliability}
+        \item {Integrated Sentry, APM, and VictoriaMetrics for observability, enhancing monitoring and diagnostics}
       \end{cvitems}
     }
   
@@ -24,9 +25,9 @@
     {Sep 21 - June 22}
     {
       \begin{cvitems}
-        \item {Integrated Algolia personalization to display items based on customer prior activity, increasing CTA by more than 40\%.}
-        \item {Enhanced the pricing platform to eliminate discrepancies across different pages within the same session, resulting in a better user experience by ensuring consistent pricing across the app.}
-        \item {Developed features that display best-selling items based on the region, with dynamically updated SKUs. 70\% of these SKUs were added to cart.}
+        \item {Integrated Algolia's personalization feature to tailor item displays according to previous customer interactions, boosting click-through rates by over 40\%.}
+        \item {Improved the pricing system to resolve inconsistencies across various pages during a single session, enhancing user experience by maintaining uniform pricing throughout the application.}
+        \item {Implemented regional best-seller features with real-time SKU updates, resulting in 70\% of these items being added to carts.}
       \end{cvitems}
     }
   
@@ -39,8 +40,8 @@
       \begin{cvitems}
         \item {Led architectural transformation from monolith to microservices, resulting in 60\% throughput improvement through optimized service boundaries and inter-service communication}
         \item {Architected ML model deployment pipeline using S3 and versioning, decoupling model artifacts from application code and enabling seamless model updates without deployments}
-        \item {Owned the end-to-end design and development of a document verification service, data processing and extraction and validation.}
-        \item {Developed a robust service to assess and categorize ID cards by category, enabling the application of specialized models for enhanced processing}
+        \item {Owned the end-to-end design and development of a document verification service, data processing, extraction and validation.}
+        \item {Engineered a solution for ID card assessment and categorization, facilitating the identification of card types and the application of suitable ML models for verification}
         \item {Implemented end-to-end encryption system for secure cross-border data transfer using asymmetric encryption and key rotation}
         \item {Developed PII masking feature with configurable rules engine, enabling region-specific ID number masking across 20+ countries}
         \item {Containerized application stack using Docker and implemented CI/CD pipelines, reducing deployment time from hours to minutes}
