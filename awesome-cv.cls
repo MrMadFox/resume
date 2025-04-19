@@ -525,11 +525,11 @@
 % Define a section for CV
 % Usage: \cvsection{<section-title>}
 \newcommand{\cvsection}[1]{
-  \par\addvspace{-0.5ex}
+  \par\addvspace{-1.5ex}
   \phantomsection{}
   \sectionstyle{#1}
   \color{gray}\vhrulefill{0.9pt}
-  \par\nobreak\addvspace{1ex}
+  \par\nobreak\addvspace{3ex} % Increased space after the title
 }
 
 % Define a subsection for CV
@@ -550,6 +550,7 @@
 \newcommand*{\cventry}[5]{
   \setlength\tabcolsep{0pt}
   \setlength{\extrarowheight}{0pt}
+  \par\addvspace{-1.5ex}
   \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} L{12.5cm} R{4.5cm}}
     \ifempty{#2#3}
       {\entrypositionstyle{#1} & \entrydatestyle{#4} \\}
@@ -615,8 +616,8 @@
 % Define a line of cv information(skill)
 % Usage: \cvskill{<type>}{<skillset>}
 \newcommand*{\cvskill}[2]{
-  % \ifempty{#2}{ \skillsetstyle{#1} }
-	\skilltypestyle{#1} & \skillsetstyle{#2} 
+  \vspace{-4mm} % Adjusted to match the space after cvsection
+  \skilltypestyle{#1} & \skillsetstyle{#2} 
   \\
 }
 
