@@ -114,7 +114,7 @@
 %-------------------------------------------------------------------------------
 %% Page Layout
 % Configure page margins with geometry
-\geometry{left=2.0cm, top=1.5cm, right=2.0cm, bottom=1.0cm, footskip=.5cm}
+\geometry{left=2.0cm, top=1.0cm, right=2.0cm, bottom=1.0cm, footskip=.5cm}
 
 %% Header & Footer
 % Set offset to each header and offset
@@ -259,7 +259,7 @@
 \newcommand*{\honorlocationstyle}[1]{{\fontsize{9pt}{1em}\bodyfontlight\slshape\color{awesome} #1}}
 
 % For elements of skill
-\newcommand*{\skilltypestyle}[1]{{\fontsize{10pt}{1em}\bodyfont\bfseries\color{slightdarktext} #1}}
+\newcommand*{\skilltypestyle}[1]{{\fontsize{9pt}{1em}\bodyfont\bfseries\color{slightdarktext} #1}}
 \newcommand*{\skillsetstyle}[1]{{\fontsize{9pt}{1em}\bodyfontlight\upshape\color{text} #1}}
 
 % For elements of the cover letter
@@ -271,6 +271,9 @@
 \newcommand*{\lettertextstyle}{\fontsize{10pt}{1.4em}\bodyfontlight\upshape\color{graytext}}
 \newcommand*{\letternamestyle}[1]{{\fontsize{10pt}{1em}\bodyfont\bfseries\color{darktext} #1}}
 \newcommand*{\letterenclosurestyle}[1]{{\fontsize{10pt}{1em}\bodyfontlight\slshape\color{lighttext} #1}}
+
+\newcommand*{\descriptionbold}[1]{{\textbf{#1}}}
+\newcommand*{\descriptionunderline}[1]{{\underline{#1}}}
 
 
 %-------------------------------------------------------------------------------

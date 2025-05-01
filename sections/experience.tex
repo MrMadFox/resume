@@ -3,54 +3,60 @@
   \cventry
     {Senior Software Engineer}
     {Slice}
-    {Bangalore, KA}
+    {Bangalore}
     {June 22 - Present}
     {
       \begin{cvitems}
-        \item {Architected and implemented DaaS (Data as a Service) platform managing 10TB+ data across organizations,
-        reducing data access TAT from 3 days to <5 minutes while ensuring SOC2 compliance}
-        \item {Led development of in-house UPI SWITCH processing 5M+ daily upi transactions, Integrated critical features including Mandates and UPI-number with NPCI}
-        \item {Deployed and integrated a multi-region on-premises HSM solution for UPI MPIN management, ensuring high availability,
-        disaster recovery, and seamless operation across multiple regions, while adhering to PCI DSS compliance standards}
-        \item {Engineered a memory-efficient UPI VPA blacklist feature using a bloom filter to enhance fraud prevention measures}
-        \item {Developed Sanction Screening Service, preventing fraud by screening against 100+ global sanction lists}
-        \item {Created the first iteration of the Avatar service, enabling real-time generation of personalized profile avatars from user selfies.}
-        \item {Modernized legacy risk assessment service evaluating 100+ factors, making it 10x faster, maintainable and scalable.}
-        \item {Integrated Sentry, APM, and VictoriaMetrics for observability, enhancing monitoring and diagnostics}
-        \item {Created a centralized NameMatch Lambda service to compare names across multiple sources,
-          identifying potential fraudsters and resolving inconsistencies where some services failed to recognize names that others flagged.}
+        \item {Architected and implemented DaaS (Data as a Service) platform managing \descriptionbold{10TB+} data across organizations,
+        reducing data access TAT from \descriptionbold{3 days to <5 min} while ensuring SOC2 compliance.}
+        \item {Led development of in-house UPI SWITCH processing \descriptionbold{5M+} daily upi transactions.}
+        \item {Single-handedly deployed \descriptionbold{multi-region on-premises HSM}(Hardware Security Module) solution for UPI MPIN management, ensuring 
+          \\ \descriptionunderline{high availability},
+        \descriptionunderline{disaster recovery}.}
+        \item {Engineered a memory-efficient UPI VPA blacklist feature using a \descriptionunderline{bloom filter} to enhance fraud prevention measures.}
+        \item {Single-handedly developed Sanction Screening Service, preventing fraud by screening against \descriptionbold{100+} global sanction lists.}
+        \item {Single-handedly created the first iteration of the Avatar service, enabling \descriptionbold{real-time} generation of \descriptionbold{personalised profile avatars} from user selfies.}
+        \item {Refactored legacy risk assessment service, evaluating \descriptionbold{100+} factors, making it \descriptionbold{10x} faster (\descriptionunderline{20sec to <2sec}).}
+        \item {Designed and deployed an AWS \descriptionbold{Lambda-based NameMatch} service to compare names across multiple sources,
+          detecting fraudulent patterns and resolving inconsistencies within multiple services, This solution reduced customer onboarding errors by \descriptionbold{10\%}.}
+          % todo: check if within is correct
+        \item {Integrated Sentry, APM, and VictoriaMetrics for observability, enhancing monitoring and diagnostics.}
       \end{cvitems}
     }
   
   \cventry
     {Software Engineer}
     {Swiggy(SuprDaily)}
-    {Bangalore, KA}
+    {Bangalore}
     {Sep 21 - June 22}
     {
       \begin{cvitems}
-        \item {Integrated with Algolia's personalization to customize item displays and ranking based on customer interaction history, resulting in a 40\%+ increase in click-through rates.}
-        \item {Improved the pricing system to resolve inconsistencies across various pages during a single session,
-          enhancing user experience by maintaining uniform pricing throughout the application through
-          cross-functional collaboration with product and engineering teams.}
-        \item {Implemented regional best-seller features with real-time SKU updates, resulting in 70\% of these items being added to carts.}
+        \item {Integrated with \descriptionunderline{Algolia's personalization} to customize item displays and ranking based on customer interaction history,
+          resulting in a \descriptionbold{40\%+ increase in CTR}.}
+        \item {Improved the pricing system to resolve price inconsistencies across various pages,
+          enhancing user experience by maintaining \descriptionbold{uniform pricing} throughout the app, through
+          cross-functional collaboration with multiple teams.}
+        \item {Implemented regional best-seller features with real-time SKU updates, resulting in \descriptionbold{70\%} of these items being added to carts.}
       \end{cvitems}
     }
   
   \cventry
     {Software Engineer}
     {Hyperverge}
-    {Bangalore, KA}
+    {Bangalore}
     {Dec 19  - Sep 21}
     {
       \begin{cvitems}
-        \item {Led architectural transformation from monolith to microservices, resulting in 60\% throughput improvement through optimized service boundaries and inter-service communication}
-        \item {Architected ML model deployment pipeline using S3 and versioning, decoupling model artifacts from application code and enabling seamless model updates without deployments}
-        \item {Owned the end-to-end design and development of a document verification service, data processing, extraction and validation.}
-        \item {Engineered a solution for ID card assessment and categorization, facilitating the identification of card types and the application of suitable ML models for verification}
-        \item {Implemented end-to-end encryption system for secure cross-border data transfer using asymmetric encryption and key rotation}
-        \item {Developed PII masking feature with configurable rules engine, enabling region-specific ID number masking across 20+ countries}
-        \item {Containerized application stack using Docker and implemented CI/CD pipelines, reducing deployment time from hours to minutes}
+        \item {Led architectural transformation from \descriptionbold{monolith to microservices}, resulting in \descriptionbold{60\%} throughput improvement
+          through optimized service boundaries and inter-service communication.}
+          \item {\descriptionbold{Containerized} application using Docker and implemented CI/CD pipelines, reducing deployment time from hours to minutes.}
+        \item {Architected \descriptionunderline{ML model deployment pipeline} using S3 and versioning, 
+          decoupling model artifacts from application code and enabling seamless model updates without \descriptionunderline{code change}.}
+        \item {Owned the end-to-end design and development of a document verification service, including data processing, extraction and validation, handling \descriptionbold{50+RPS}}
+        \item {Engineered a solution for \descriptionbold{ID card assessment and categorization}, facilitating the identification of card types and 
+          the application of suitable ML models for verification.}
+        \item {Implemented end-to-end encryption system for secure cross-border data transfer using asymmetric encryption and key rotation.}
+        \item {Engineered a region-agnostic PII masking solution to automatically obfuscate ID numbers on ID cards.}
       \end{cvitems}
     }
 
