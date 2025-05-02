@@ -529,7 +529,7 @@
 % Define a section for CV
 % Usage: \cvsection{<section-title>}
 \newcommand{\cvsection}[1]{
-  \par\addvspace{-1.5ex}
+  \par\addvspace{-1.0ex}
   \phantomsection{}
   \sectionstyle{#1}
   \color{gray}\vhrulefill{0.9pt}
@@ -554,7 +554,7 @@
 \newcommand*{\cventry}[5]{
   \setlength\tabcolsep{0pt}
   \setlength{\extrarowheight}{0pt}
-  \par\addvspace{-1.5ex}
+  \par\addvspace{-2.0ex}
   \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}} L{12.5cm} R{4.5cm}}
     \ifempty{#2#3}
       {\entrytitlestyle{#1} & \entrydatestyle{#4} \\}
