@@ -92,7 +92,7 @@
   pdfkeywords={},
   colorlinks=false,
   linkcolor=blue,
-  allbordercolors=white  
+  pdfborder={0 0 0}
   %frenchlinks=True,
 }
 
