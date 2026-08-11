@@ -173,6 +173,8 @@
         awesome\fi%
     } #1#2#3%
   }%
+  % Preserve the green/dark split when ATS shaping is enabled.
+  \kern0pt
   \stepcounter{colorCounter}%
 }
 
