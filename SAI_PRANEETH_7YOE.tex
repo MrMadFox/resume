@@ -82,6 +82,9 @@
 %%% Make a header for CV with personal data
 \makecvheader
 
+% Preserve ordinary spaces within same-font PDF text runs for ATS extraction.
+\XeTeXinterwordspaceshaping=2
+
 %%% Import contents
 \import{\sectiondir}{experience.tex}
 % \import{\sectiondir}{projects.tex}

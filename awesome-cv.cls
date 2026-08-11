@@ -272,8 +272,25 @@
 \newcommand*{\letternamestyle}[1]{{\fontsize{10pt}{1em}\bodyfont\bfseries\color{darktext} #1}}
 \newcommand*{\letterenclosurestyle}[1]{{\fontsize{10pt}{1em}\bodyfontlight\slshape\color{lighttext} #1}}
 
-\newcommand*{\descriptionbold}[1]{{\textbf{#1}}}
-\newcommand*{\descriptionunderline}[1]{{\underline{#1}}}
+\newcommand*{\atsSpace}{\char"0020\relax}
+% Replace a preceding inter-word skip with an explicit PDF text space before bold text.
+\newcommand*{\descriptionbold}[1]{%
+  {%
+    \ifhmode
+      \ifdim\lastskip>0pt
+        \unskip\atsSpace
+      \fi
+    \fi
+    \textbf{#1}%
+  }%
+}
+% Underline the phrase and preserve a following source space in the PDF text layer.
+\ExplSyntaxOn
+\newcommand*{\descriptionunderline}[1]{%
+  \underline{#1}%
+  \peek_meaning_remove:NT \c_space_token { \atsSpace }%
+}
+\ExplSyntaxOff
 
 
 %-------------------------------------------------------------------------------
