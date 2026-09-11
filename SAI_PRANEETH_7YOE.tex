@@ -20,6 +20,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Themes: Awesome-CV
 \documentclass[11pt, a4paper]{awesome-cv}
+% \geometry{top=1.8cm}
+\patchcmd{\makecvheader}{\vspace{-0.5mm}}{\vspace{-0.3mm}}{}{\errmessage{Header spacing patch failed}}
 
 %%% Override a directory location for fonts(default: 'fonts/')
 \fontdir[fonts/]
@@ -62,7 +64,7 @@
 \email{c.saipraneeth888@gmail.com}
 \github{mrMadFox}
 \linkedin{sai-praneeth-334195160}{Sai Praneeth}
-% \homepage{resume.praneeth.fun}
+\homepage{resume.praneeth.fun}
 % \codechef{mrfox007}
 
 %%% Optionals
@@ -81,6 +83,7 @@
 \begin{document}
 %%% Make a header for CV with personal data
 \makecvheader
+\vspace{4mm}
 
 % Preserve ordinary spaces within same-font PDF text runs for ATS extraction.
 \XeTeXinterwordspaceshaping=2
