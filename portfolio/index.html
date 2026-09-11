@@ -418,13 +418,12 @@
         }
         const distance = (points.length - 1) * step;
         branches.push({ points, start, distance, color,
-          width: 0.95 * Math.pow(0.72, depth), alpha: random(0.23, 0.33) - depth * 0.012 });
+          width: Math.max(0.35, 0.95 * Math.pow(0.72, depth)), alpha: random(0.23, 0.33) });
         reach = Math.max(reach, start + distance);
         if (depth === 4 || points.length < 8) return;
 
-        const count = depth === 3 ? 2 : 3;
         const side = Math.random() < 0.5 ? -1 : 1;
-        for (let index = 0; index < count; index++) {
+        for (let index = 0; index < 3; index++) {
           const fraction = 0.35 + index * 0.23 + random(-0.04, 0.04);
           const pointIndex = Math.floor((points.length - 1) * fraction);
           const origin = points[pointIndex];
@@ -438,7 +437,7 @@
       function draw(progress) {
         context.clearRect(0, 0, width, height);
         const distance = progress * reach;
-        // ponytail: redraw at most 564 finite branches; cache paths if this artwork grows.
+        // ponytail: redraw at most 968 finite branches; cache paths if this artwork grows.
         for (const branch of branches) {
           const amount = Math.min(1, (distance - branch.start) / branch.distance);
           if (amount <= 0) continue;
@@ -515,10 +514,12 @@
         const length = mobile ? Math.min(175, width * 0.43)
           : Math.min(285, width * 0.22, height * 0.34);
         const origins = mobile
-          ? [[-6, height * 0.18, 0.28], [width + 6, height * 0.53, 3.45], [-6, height * 0.91, -0.6]]
-          : [[-6, height * 0.18, 0.35], [width * 0.2, -6, 1.25],
-            [width + 6, height * 0.34, 2.9], [-6, height * 0.82, -0.42],
-            [width * 0.79, height + 6, -1.95], [width + 6, height * 0.88, 3.65]];
+          ? [[-6, height * 0.13, 0.28], [width + 6, height * 0.36, 2.9],
+            [-6, height * 0.66, -0.36], [width + 6, height * 0.93, 3.65]]
+          : [[-6, height * 0.14, 0.35], [width * 0.2, -6, 1.25],
+            [width + 6, height * 0.24, 2.9], [-6, height * 0.48, 0.04],
+            [width + 6, height * 0.57, 3.4], [-6, height * 0.86, -0.42],
+            [width * 0.79, height + 6, -1.95], [width + 6, height * 0.92, 3.65]];
         origins.forEach(([x, y, heading], index) => {
           grow(x, y, heading + random(-0.18, 0.18), random(-0.4, 0.4),
             length * random(0.83, 1.08), 0, random(0, 65),
