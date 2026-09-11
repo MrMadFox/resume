@@ -44,7 +44,18 @@
       border-radius: 3px;
     }
     svg { width: 1em; height: 1em; flex-shrink: 0; }
+    .branch-art {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      mask-image: radial-gradient(ellipse at 52% 45%, transparent 15%, #0003 45%, #000 80%);
+    }
     .site-shell {
+      position: relative;
+      z-index: 1;
       width: calc(100% - var(--page-gutter) * 2);
       max-width: 72.5rem;
       margin: 0 auto;
@@ -57,6 +68,7 @@
     }
     .skip-link {
       position: absolute;
+      z-index: 2;
       top: 0.75rem;
       left: 1.5rem;
       padding: 0.5rem 0.75rem;
@@ -147,6 +159,7 @@
 
     @media (max-width: 540px) {
       :root { --body-size: 1rem; --line-height: 1.7; }
+      .branch-art { opacity: 0.75; mask-image: radial-gradient(ellipse, #0001 25%, #0008 65%, #000); }
       .site-shell { padding-top: 1.25rem; }
       h1 { font-size: 2.25rem; }
       .title { margin-top: 0.5rem; }
@@ -178,7 +191,7 @@
       body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
       .site-shell { display: block; width: 100%; max-width: none; padding: 0; }
       .identity { position: static; margin-bottom: 1rem; }
-      .skip-link, .pdf-link { display: none; }
+      .skip-link, .pdf-link, .branch-art { display: none; }
       h1 { font-size: 24pt; }
       .title { margin-top: 0.25rem; }
       .role-title, .specialties { display: inline; font-size: 10pt; }
@@ -208,6 +221,7 @@
   </style>
 </head>
 <body>
+  <canvas id="branch-art" class="branch-art" aria-hidden="true"></canvas>
   <a class="skip-link" href="#experience">Skip to experience</a>
   <div class="site-shell">
     <header class="identity">
@@ -318,5 +332,261 @@
       </section>
     </main>
   </div>
+  <script id="branch-animation">
+    (() => {
+      const canvas = document.getElementById('branch-art');
+      if (!canvas) return;
+      const context = canvas.getContext('2d');
+      if (!context) return;
+
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const duration = 18000;
+      const random = (min, max) => min + Math.random() * (max - min);
+      let width = 0;
+      let height = 0;
+      let pixelRatio = 1;
+      let branches = [];
+      let reach = 1;
+      let elapsed = 0;
+      let previousTime = null;
+      let frame = 0;
+      let resizeTimer;
+      let pageActive = true;
+      const pointer = { x: 0, y: 0, active: false };
+      const motion = { x: 0, y: 0, strength: 0, swayX: 0, swayY: 0, scroll: 0 };
+      let scrollImpulse = 0;
+      let lastScroll = window.scrollY;
+      const clamp = (value, limit) => Math.max(-limit, Math.min(limit, value));
+      const allowed = () => !reducedMotion.matches && !document.hidden && pageActive;
+      const moving = () => motion.x !== pointer.x || motion.y !== pointer.y ||
+        motion.strength !== Number(pointer.active) ||
+        motion.swayX !== (pointer.active ? (pointer.x / width - 0.5) * 24 : 0) ||
+        motion.swayY !== (pointer.active ? (pointer.y / height - 0.5) * 16 : 0) ||
+        motion.scroll !== 0 || scrollImpulse !== 0;
+
+      function clearInteraction() {
+        pointer.active = false;
+        scrollImpulse = 0;
+        lastScroll = window.scrollY;
+      }
+
+      function easeMotion(delta) {
+        const blend = 1 - Math.exp(-Math.min(delta, 64) / 100);
+        const approach = (value, target) => Math.abs(target - value) < 0.01
+          ? target : value + (target - value) * blend;
+        motion.x = approach(motion.x, pointer.x);
+        motion.y = approach(motion.y, pointer.y);
+        motion.strength = approach(motion.strength, Number(pointer.active));
+        motion.swayX = approach(motion.swayX, pointer.active ? (pointer.x / width - 0.5) * 24 : 0);
+        motion.swayY = approach(motion.swayY, pointer.active ? (pointer.y / height - 0.5) * 16 : 0);
+        motion.scroll = approach(motion.scroll, scrollImpulse);
+        scrollImpulse *= Math.exp(-Math.min(delta, 64) / 170);
+        if (Math.abs(scrollImpulse) < 0.01) scrollImpulse = 0;
+      }
+
+      function tracePoint(x, y, move = false) {
+        if (motion.strength || motion.swayX || motion.swayY || motion.scroll) {
+          const dx = x - motion.x;
+          const dy = y - motion.y;
+          const influence = motion.strength
+            ? Math.max(0, 1 - Math.hypot(dx, dy) / Math.min(300, width * 0.7)) : 0;
+          const force = influence * influence * motion.strength * 0.32;
+          // The same deformation at shared coordinates keeps every fork connected.
+          const flex = Math.max(0, Math.min(1, Math.min(x, width - x, y, height - y) / 70));
+          x += (motion.swayX + dx * force) * flex;
+          y += (motion.swayY + motion.scroll + dy * force) * flex;
+        }
+        if (move) context.moveTo(x, y);
+        else context.lineTo(x, y);
+      }
+
+      function grow(x, y, heading, bend, length, depth, start, color) {
+        const points = [{ x, y, heading }];
+        const steps = Math.max(12, Math.ceil(length / 5));
+        const step = length / steps;
+        const phase = random(0, Math.PI * 2);
+        let curl = random(-0.008, 0.008);
+        for (let index = 1; index <= steps; index++) {
+          // Offshoots share their parent's tangent, then curve away from it.
+          heading += bend * Math.exp(-index / 6) / 6;
+          curl = curl * 0.88 + random(-0.006, 0.006);
+          heading += curl + Math.sin(index / 9 + phase) * 0.014;
+          x += Math.cos(heading) * step;
+          y += Math.sin(heading) * step;
+          points.push({ x, y, heading });
+          if (x < -45 || x > width + 45 || y < -45 || y > height + 45) break;
+        }
+        const distance = (points.length - 1) * step;
+        branches.push({ points, start, distance, color,
+          width: 0.95 * Math.pow(0.72, depth), alpha: random(0.23, 0.33) - depth * 0.012 });
+        reach = Math.max(reach, start + distance);
+        if (depth === 4 || points.length < 8) return;
+
+        const count = depth === 3 ? 2 : 3;
+        const side = Math.random() < 0.5 ? -1 : 1;
+        for (let index = 0; index < count; index++) {
+          const fraction = 0.35 + index * 0.23 + random(-0.04, 0.04);
+          const pointIndex = Math.floor((points.length - 1) * fraction);
+          const origin = points[pointIndex];
+          grow(origin.x, origin.y, origin.heading,
+            side * (index % 2 ? -1 : 1) * random(0.45, 0.85),
+            length * random(0.64, 0.8) * (1 - fraction * 0.4), depth + 1,
+            start + pointIndex * step, color);
+        }
+      }
+
+      function draw(progress) {
+        context.clearRect(0, 0, width, height);
+        const distance = progress * reach;
+        // ponytail: redraw at most 564 finite branches; cache paths if this artwork grows.
+        for (const branch of branches) {
+          const amount = Math.min(1, (distance - branch.start) / branch.distance);
+          if (amount <= 0) continue;
+          const last = amount * (branch.points.length - 1);
+          const whole = Math.floor(last);
+          context.beginPath();
+          tracePoint(branch.points[0].x, branch.points[0].y, true);
+          for (let index = 1; index <= whole; index++) {
+            tracePoint(branch.points[index].x, branch.points[index].y);
+          }
+          if (whole < branch.points.length - 1) {
+            const a = branch.points[whole];
+            const b = branch.points[whole + 1];
+            tracePoint(a.x + (b.x - a.x) * (last - whole),
+              a.y + (b.y - a.y) * (last - whole));
+          }
+          context.strokeStyle = branch.color;
+          context.globalAlpha = branch.alpha;
+          context.lineWidth = branch.width;
+          context.stroke();
+        }
+      }
+
+      function sync() {
+        cancelAnimationFrame(frame);
+        frame = 0;
+        previousTime = null;
+        wake();
+      }
+
+      function wake() {
+        if (!frame && allowed() && (elapsed < duration || moving())) {
+          frame = requestAnimationFrame(tick);
+        }
+      }
+
+      function tick(time) {
+        frame = 0;
+        if (!allowed()) {
+          previousTime = null;
+          return;
+        }
+        const delta = previousTime === null ? 0 : Math.max(0, time - previousTime);
+        elapsed = Math.min(duration, elapsed + delta);
+        previousTime = time;
+        easeMotion(delta);
+        draw(elapsed / duration);
+        if (elapsed < duration || moving()) frame = requestAnimationFrame(tick);
+        else sync();
+      }
+
+      function reset(force = false) {
+        const bounds = canvas.getBoundingClientRect();
+        const nextWidth = Math.max(1, Math.round(bounds.width || window.innerWidth));
+        const nextHeight = Math.max(1, Math.round(bounds.height || window.innerHeight));
+        const nextRatio = Math.min(window.devicePixelRatio || 1, 2);
+        if (!force && Math.abs(nextWidth - width) < 40 &&
+            Math.abs(nextHeight - height) < Math.max(48, height * 0.1) && nextRatio === pixelRatio) return;
+        width = nextWidth;
+        height = nextHeight;
+        pixelRatio = nextRatio;
+        clearInteraction();
+        pointer.x = motion.x = width / 2;
+        pointer.y = motion.y = height / 2;
+        motion.strength = motion.swayX = motion.swayY = motion.scroll = 0;
+        canvas.width = Math.round(width * pixelRatio);
+        canvas.height = Math.round(height * pixelRatio);
+        context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+        context.lineCap = 'round';
+        context.lineJoin = 'round';
+        branches = [];
+        reach = 1;
+        const mobile = width < 760;
+        const length = mobile ? Math.min(175, width * 0.43)
+          : Math.min(285, width * 0.22, height * 0.34);
+        const origins = mobile
+          ? [[-6, height * 0.18, 0.28], [width + 6, height * 0.53, 3.45], [-6, height * 0.91, -0.6]]
+          : [[-6, height * 0.18, 0.35], [width * 0.2, -6, 1.25],
+            [width + 6, height * 0.34, 2.9], [-6, height * 0.82, -0.42],
+            [width * 0.79, height + 6, -1.95], [width + 6, height * 0.88, 3.65]];
+        origins.forEach(([x, y, heading], index) => {
+          grow(x, y, heading + random(-0.18, 0.18), random(-0.4, 0.4),
+            length * random(0.83, 1.08), 0, random(0, 65),
+            index % 2 ? '#74a99c' : '#89b4a0');
+        });
+        elapsed = reducedMotion.matches ? duration : 0;
+        draw(elapsed / duration);
+        sync();
+      }
+
+      reducedMotion.addEventListener('change', () => {
+        clearInteraction();
+        motion.x = pointer.x;
+        motion.y = pointer.y;
+        motion.strength = motion.swayX = motion.swayY = motion.scroll = 0;
+        elapsed = reducedMotion.matches ? duration : 0;
+        draw(elapsed / duration);
+        sync();
+      });
+      function followPointer(event) {
+        if (!allowed() || event.isPrimary === false) return;
+        pointer.x = Math.max(0, Math.min(width, event.clientX));
+        pointer.y = Math.max(0, Math.min(height, event.clientY));
+        pointer.active = true;
+        wake();
+      }
+      function releasePointer() {
+        pointer.active = false;
+        wake();
+      }
+      window.addEventListener('pointermove', followPointer, { passive: true });
+      window.addEventListener('pointerdown', followPointer, { passive: true });
+      window.addEventListener('pointerup', event => {
+        if (event.pointerType !== 'mouse' && event.isPrimary !== false) releasePointer();
+      }, { passive: true });
+      window.addEventListener('pointercancel', event => {
+        if (event.isPrimary !== false) releasePointer();
+      }, { passive: true });
+      document.addEventListener('pointerleave', releasePointer, { passive: true });
+      window.addEventListener('blur', releasePointer);
+      window.addEventListener('scroll', () => {
+        const delta = window.scrollY - lastScroll;
+        lastScroll = window.scrollY;
+        if (!allowed()) return;
+        scrollImpulse = clamp(scrollImpulse - clamp(delta, 100) * 0.18, 24);
+        wake();
+      }, { passive: true });
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) clearInteraction();
+        sync();
+      });
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => reset(), 180);
+      });
+      window.addEventListener('pagehide', () => {
+        pageActive = false;
+        clearInteraction();
+        clearTimeout(resizeTimer);
+        sync();
+      });
+      window.addEventListener('pageshow', () => {
+        pageActive = true;
+        reset();
+        sync();
+      });
+      reset(true);
+    })();
+  </script>
 </body>
 </html>
