@@ -48,7 +48,8 @@
       position: fixed;
       inset: 0;
       width: 100%;
-      height: 100%;
+      height: 100vh;
+      height: 100lvh;
       z-index: 0;
       pointer-events: none;
       mask-image: radial-gradient(ellipse at 52% 45%, transparent 15%, #0003 45%, #000 80%);
@@ -254,7 +255,8 @@
           </header>
           <ul class="accomplishments">
             <li>Designed, developed, and maintained OCI’s customer-facing inter-region Network Performance Monitoring (NPM) solution, delivering minute-level round-trip time visibility across <strong>150+ cloud regions</strong> in multiple isolated OCI realms.</li>
-            <li>Contributed to a global network telemetry pipeline that processed <strong>~10 billion metrics per minute</strong> across <strong>~100 regions</strong> and delivered them to customer monitoring systems in under <strong>10 seconds</strong>.</li>
+            <li>Designed, implemented, and migrated the global network telemetry pipeline from PySpark to <strong>Kafka Streams</strong>, reducing costs from <strong>$20K to $10K/day</strong>.</li>
+            <li>Extended the global network telemetry pipeline to ingest metrics from OCI's <strong class="secondary">multiplanar network topology</strong>. The overall pipeline processes <strong>~10 billion metrics per minute</strong> across <strong>~100 regions</strong>, delivering metrics to customer monitoring systems in under <strong>10 seconds</strong>.</li>
             <li>Re-architected and migrated regional operations workloads from dedicated hosts to <strong>serverless</strong> infrastructure, eliminating host maintenance and reducing infrastructure costs.</li>
           </ul>
         </article>
@@ -286,7 +288,7 @@
           </header>
           <ul class="accomplishments">
             <li>Integrated <strong class="secondary">Algolia's personalization engine</strong> to tailor item displays and rankings to customer interaction history, increasing click-through rate (CTR) by <strong>40%+</strong>.</li>
-            <li>Collaborated with multiple teams to improve the pricing system, eliminate cross-page inconsistencies, and deliver <strong class="secondary">uniform pricing</strong> throughout the app.</li>
+            <li>Coordinated with multiple teams to fix cross-page pricing inconsistencies and deliver <strong class="secondary">uniform prices</strong> throughout the app.</li>
             <li>Implemented regional best-seller features with real-time catalog updates, achieving a <strong>70%</strong> <strong class="secondary">add-to-cart rate</strong> for featured items.</li>
           </ul>
         </article>
@@ -436,8 +438,8 @@
 
       function draw(progress) {
         context.clearRect(0, 0, width, height);
-        const distance = progress * reach;
-        // ponytail: redraw at most 968 finite branches; cache paths if this artwork grows.
+        const distance = (1 - (1 - progress) ** 2) * reach;
+        // ponytail: redraw at most 1089 finite branches; cache paths if this artwork grows.
         for (const branch of branches) {
           const amount = Math.min(1, (distance - branch.start) / branch.distance);
           if (amount <= 0) continue;
@@ -494,7 +496,8 @@
         const nextWidth = Math.max(1, Math.round(bounds.width || window.innerWidth));
         const nextHeight = Math.max(1, Math.round(bounds.height || window.innerHeight));
         const nextRatio = Math.min(window.devicePixelRatio || 1, 2);
-        if (!force && Math.abs(nextWidth - width) < 40 &&
+        const hasLeftSpace = nextWidth >= 1100 && nextHeight > 600;
+        if (!force && hasLeftSpace === (width >= 1100 && height > 600) && Math.abs(nextWidth - width) < 40 &&
             Math.abs(nextHeight - height) < Math.max(48, height * 0.1) && nextRatio === pixelRatio) return;
         width = nextWidth;
         height = nextHeight;
@@ -512,7 +515,7 @@
         reach = 1;
         const mobile = width < 760;
         const length = mobile ? Math.min(175, width * 0.43)
-          : Math.min(285, width * 0.22, height * 0.34);
+          : 1.15 * Math.min(285, width * 0.22, height * 0.34);
         const origins = mobile
           ? [[-6, height * 0.13, 0.28], [width + 6, height * 0.36, 2.9],
             [-6, height * 0.66, -0.36], [width + 6, height * 0.93, 3.65]]
@@ -520,6 +523,7 @@
             [width + 6, height * 0.24, 2.9], [-6, height * 0.48, 0.04],
             [width + 6, height * 0.57, 3.4], [-6, height * 0.86, -0.42],
             [width * 0.79, height + 6, -1.95], [width + 6, height * 0.92, 3.65]];
+        if (hasLeftSpace) origins.push([width * 0.28, height + 6, -1.8]);
         origins.forEach(([x, y, heading], index) => {
           grow(x, y, heading + random(-0.18, 0.18), random(-0.4, 0.4),
             length * random(0.83, 1.08), 0, random(0, 65),
