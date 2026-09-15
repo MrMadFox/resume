@@ -3,227 +3,380 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="dark">
+  <meta name="color-scheme" content="light dark">
   <title>Sai Praneeth | Senior Software Engineer</title>
   <meta name="description" content="Sai Praneeth, Senior Software Engineer in distributed systems, cloud and payments. Experience at Oracle Cloud, Slice, Swiggy and HyperVerge.">
+  <link rel="canonical" href="https://resume.bypraneeth.com/">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23245b3d'/%3E%3Cpath fill='%23d4efdd' d='M17 17h12v12H17zm18 0h12v12H35zM17 35h12v12H17zm18 0h12v12H35z'/%3E%3C/svg%3E">
+
+  <script>
+    (() => {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const theme =
+        param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+
+    (() => {
+      const system = matchMedia('(prefers-color-scheme: dark)');
+      const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+      const root = document.documentElement;
+      const storageKey = 'resume-color-theme';
+      let storage;
+      let preference = null;
+      let themeTransition;
+      let toggle;
+      const storageUnavailable = error => {
+        if (!(error instanceof DOMException) || !['SecurityError', 'QuotaExceededError'].includes(error.name)) throw error;
+        console.warn('Theme preference storage is unavailable; your choice still applies to this page.');
+      };
+      try {
+        storage = window.localStorage;
+        const saved = storage.getItem(storageKey);
+        if (saved === 'light' || saved === 'dark') preference = saved;
+      } catch (error) {
+        storageUnavailable(error);
+      }
+      const currentTheme = () => preference ?? (system.matches ? 'dark' : 'light');
+      const apply = (animate = false) => {
+        const update = () => {
+          const theme = currentTheme();
+          if (toggle) {
+            const action = theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
+            toggle.setAttribute('aria-label', action);
+            toggle.title = action;
+          }
+          if (root.dataset.theme !== theme) {
+            root.dataset.theme = theme;
+            document.dispatchEvent(new Event('portfolio-theme'));
+          }
+        };
+        themeTransition?.skipTransition();
+        if (animate && currentTheme() !== root.dataset.theme && !reduced.matches &&
+            !document.hidden && typeof document.startViewTransition === 'function') {
+          themeTransition = document.startViewTransition(update);
+          themeTransition.ready.catch(error => {
+            // Rapid clicks and reduced-motion changes intentionally cancel the previous fade.
+            if (error instanceof DOMException && error.name === 'AbortError') return;
+            console.warn('Theme crossfade could not run.', error);
+          });
+        } else {
+          update();
+        }
+      };
+      apply();
+      system.addEventListener('change', () => { if (preference === null) apply(true); });
+      document.addEventListener('DOMContentLoaded', () => {
+        const controls = document.querySelector('.theme-controls');
+        toggle = controls.querySelector('.theme-toggle');
+        controls.hidden = false;
+        apply();
+        toggle.addEventListener('click', () => {
+          preference = currentTheme() === 'dark' ? 'light' : 'dark';
+          apply(true);
+          try {
+            storage?.setItem(storageKey, preference);
+          } catch (error) {
+            storageUnavailable(error);
+          }
+        });
+        window.addEventListener('storage', event => {
+          if (event.storageArea !== storage || (event.key !== storageKey && event.key !== null)) return;
+          preference = event.newValue === 'light' || event.newValue === 'dark' ? event.newValue : null;
+          apply(true);
+        });
+        reduced.addEventListener('change', () => {
+          if (!reduced.matches) return;
+          apply();
+        });
+      });
+    })();
+  </script>
   <style>
-    :root {
-      color-scheme: dark;
-      --background: #15191e;
-      --text: #d2d8de;
-      --heading: #f2f4f6;
-      --muted: #a4b0bd;
-      --label: #b3c4df;
-      --accent: #95d4b2;
-      --rule: #303841;
-      --hover: #212c26;
-      --emphasis: #ace1c2;
-      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      --body-size: 1.0625rem;
-      --line-height: 1.65;
-      --page-gutter: 2.5rem;
-    }
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+:root {
+  --cp-oracle: #9f3428;
+  --cp-slice: #813981;
+  --cp-swiggy: #914716;
+  --cp-hyperverge: #51438f;
+  --cp-support: #24547a;
+  --cp-impact: #176132;
+}
+html[data-theme="dark"] {
+  --cp-oracle: #e66b5b;
+  --cp-slice: #df9fdf;
+  --cp-swiggy: #ed9d64;
+  --cp-hyperverge: #a6a1ff;
+  --cp-support: #b3c4df;
+  --cp-impact: var(--cp-success);
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme]) {
+    color-scheme: dark;
+    --cp-surface: #292929;
+    --cp-border: #474747;
+    --cp-border-strong: #5f5f5f;
+    --cp-text: #dedede;
+    --cp-text-soft: #b0b0b0;
+    --cp-accent: #fd8ea1;
+    --cp-accent-hover: #fb7b91;
+    --cp-accent-soft: rgba(253, 142, 161, 0.14);
+    --cp-accent-fg: #1a1a1a;
+    --cp-success: #4ade80;
+    --cp-danger: #f87171;
+    --cp-oracle: #e66b5b;
+    --cp-slice: #df9fdf;
+    --cp-swiggy: #ed9d64;
+    --cp-hyperverge: #a6a1ff;
+    --cp-support: #b3c4df;
+    --cp-impact: var(--cp-success);
+  }
+}
 
-    * { box-sizing: border-box; }
-    html { scroll-padding-top: 2rem; -webkit-text-size-adjust: 100%; }
-    body {
-      margin: 0;
-      background: var(--background);
-      color: var(--text);
-      font: var(--body-size)/var(--line-height) var(--font);
-      -webkit-font-smoothing: antialiased;
-    }
-    h1, h2, h3, p, ul, dl, dd { margin: 0; }
-    h1, h2, h3 { color: var(--heading); font-weight: 650; }
-    a { color: inherit; text-underline-offset: 0.24em; text-decoration-thickness: 1px; -webkit-tap-highlight-color: transparent; }
-    a:hover { color: var(--accent); }
-    a:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 5px;
-      border-radius: 3px;
-    }
-    svg { width: 1em; height: 1em; flex-shrink: 0; }
-    .branch-art {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100vh;
-      height: 100lvh;
-      z-index: 0;
-      pointer-events: none;
-      mask-image: radial-gradient(ellipse at 52% 45%, transparent 15%, #0003 45%, #000 80%);
-    }
-    .site-shell {
-      position: relative;
-      z-index: 1;
-      width: calc(100% - var(--page-gutter) * 2);
-      max-width: 72.5rem;
-      margin: 0 auto;
-      padding-block: 5rem;
-      display: grid;
-      grid-template-columns: minmax(16.25rem, 21.25rem) minmax(0, 42.5rem);
-      justify-content: center;
-      align-items: start;
-      gap: clamp(2.5rem, 5vw, 5rem);
-    }
-    .skip-link {
-      position: absolute;
-      z-index: 2;
-      top: 0.75rem;
-      left: 1.5rem;
-      padding: 0.5rem 0.75rem;
-      background: var(--background);
-      transform: translateY(-200%);
-    }
-    .skip-link:focus { transform: none; }
-    .identity { position: sticky; top: 4.5rem; text-align: center; }
-    h1 { font-size: 2.75rem; line-height: 1.15; letter-spacing: -0.04em; word-spacing: 0.08em; }
-    .title { margin-top: 1rem; }
-    .title-divider { display: none; }
-    .role-title { display: block; color: var(--heading); font-size: 1.25rem; font-weight: 500; line-height: 1.5; }
-    .specialties { display: block; margin-top: 0.2rem; color: var(--muted); font-size: 1rem; line-height: 1.6; }
-    .contacts {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      gap: 0 0.5rem;
-      margin-top: 1.25rem;
-      color: var(--muted);
-      font-size: 0.875rem;
-      font-style: normal;
-    }
-    .contacts a { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 44px; text-decoration-color: var(--rule); }
-    .contacts svg { width: 14px; height: 14px; }
-    .contacts .email-link { flex-basis: 100%; justify-content: center; }
-    .contacts a:hover { text-decoration-color: currentColor; }
-    .pdf-link {
-      display: flex;
-      width: fit-content;
-      margin: 1rem auto 0;
-      padding-inline: 0.875rem;
-      border: 1px solid var(--rule);
-      border-radius: 5px;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      min-height: 46px;
-      color: var(--heading);
-      font-size: 0.875rem;
-      font-weight: 500;
-      text-decoration: none;
-    }
-    .pdf-link:hover { background: var(--hover); color: var(--accent); }
-    .pdf-link svg { width: 24px; height: 27px; }
-    main { min-width: 0; }
-    section + section { margin-top: 3.5rem; }
-    section { scroll-margin-top: 2rem; }
-    h2 { margin-bottom: 1.75rem; display: flex; align-items: center; gap: 1rem; font-size: 1.25rem; line-height: 1.4; letter-spacing: -0.02em; }
-    h2::after { content: ""; flex: 1; border-top: 1px solid var(--rule); }
-    .job + .job { margin-top: 2.75rem; }
-    .job-header {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      grid-template-areas: "company dates" "role dates";
-      align-items: baseline;
-      gap: 0.2rem 1rem;
-      margin-bottom: 0.875rem;
-    }
-    .job h3 { grid-area: company; font-size: 1.25rem; line-height: 1.45; letter-spacing: -0.02em; }
-    #oracle-heading { color: #e66b5b; }
-    #slice-heading { color: #df9fdf; }
-    #swiggy-heading { color: #ed9d64; }
-    #hyperverge-heading { color: #a6a1ff; }
-    .role { grid-area: role; color: var(--muted); font-size: 1rem; line-height: 1.55; }
-    .dates { grid-area: dates; color: var(--muted); font-size: 0.875rem; line-height: 1.6; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
-    .accomplishments { padding-left: 1.125rem; }
-    .accomplishments li { padding-left: 0.1rem; }
-    .accomplishments li + li { margin-top: 0.75rem; }
-    .accomplishments li::marker { color: var(--muted); font-size: 0.75em; }
-    strong { color: var(--emphasis); font-weight: 700; }
-    strong.secondary { color: var(--label); }
-    .stacks { display: grid; grid-template-columns: 10rem minmax(0, 1fr); gap: 1rem 1.5rem; font-size: 1rem; }
-    .stacks dt { color: var(--label); font-size: 0.9375rem; font-weight: 600; }
-    .education { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.35rem 1rem; }
-    .education h3 { font-size: 1.0625rem; font-weight: 400; line-height: 1.55; }
-    .education p { color: var(--muted); font-size: 0.9375rem; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 2rem; }
+body {
+  margin: 0;
+  background: var(--cp-surface);
+  color: var(--cp-text);
+  font: 1rem/1.75 "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, p, ul, dl, dd { margin: 0; }
+h1, h2, h3 { font-weight: 600; }
+a { color: inherit; text-underline-offset: .3em; text-decoration-thickness: 1px; }
+a:hover { color: var(--cp-accent); text-decoration-color: var(--cp-accent); }
+a:focus-visible { outline: 2px solid var(--cp-accent); outline-offset: 5px; border-radius: .25rem; }
+svg { width: 1em; height: 1em; flex-shrink: 0; }
+::selection { color: var(--cp-text); background: var(--cp-border-strong); }
+.ambient-art { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; color: var(--cp-accent); }
+.reading-progress {
+  position: fixed; inset: 0 auto auto 0; width: 100%; height: 2px;
+  background: var(--cp-accent); transform: scaleX(0); transform-origin: left; z-index: 3;
+}
+.site-shell { position: relative; z-index: 1; width: min(1160px, calc(100% - 96px)); margin: auto; padding: 72px 0 88px; display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 84px; align-items: start; }
+.identity { position: sticky; top: 80px; padding-top: 36px; min-width: 0; }
+.identity::before { content: ""; display: block; width: 40px; height: 3px; background: var(--cp-accent); margin-bottom: 32px; }
+h1 { max-width: 6ch; font-size: 4.5rem; line-height: 1.05; letter-spacing: -.065em; }
+.title { margin-top: 24px; }
+.role-title { display: block; font-size: 1.125rem; font-weight: 500; line-height: 1.5; }
+.specialties { display: block; color: var(--cp-text-soft); font-size: .9375rem; margin-top: 4px; }
+.title-divider { display: none; }
+.contacts { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; margin-top: 24px; font-style: normal; font-size: .875rem; color: var(--cp-text-soft); }
+.contacts a { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; max-width: 100%; text-decoration-color: var(--cp-border-strong); overflow-wrap: anywhere; }
+.contacts svg { width: 15px; height: 15px; }
+.contacts .email-link { flex-basis: 100%; }
+.pdf-link {
+  display: inline-flex; align-items: center; gap: 10px; min-height: 46px; padding: 8px 16px;
+  margin-top: 20px; font-size: .875rem; font-weight: 600; text-decoration: none;
+  border: 1px solid var(--cp-border-strong); border-radius: .625rem; background: var(--cp-surface);
+}
+.pdf-link:hover { background: var(--cp-accent-soft); border-color: var(--cp-accent); }
+.pdf-link svg { width: 23px; height: 26px; }
+.pdf-link rect { fill: var(--cp-danger); }
+.pdf-link rect + path { stroke: var(--cp-surface); }
+.skip-link { position: fixed; z-index: 5; top: 12px; left: 12px; background: var(--cp-surface); padding: 12px 16px; transform: translateY(-200%); }
+.skip-link:focus { transform: none; }
+main, section, .job, .job-header { min-width: 0; }
+section { scroll-margin-top: 28px; }
+section + section { margin-top: 56px; }
+h2 { display: flex; align-items: center; gap: 20px; font-size: .8125rem; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 28px; color: var(--cp-text-soft); }
+h2::after { content: ""; flex: 1; height: 1px; background: var(--cp-border); }
+.job { position: relative; padding-left: 28px; border-left: 1px solid var(--cp-border); }
+.job::before { content: ""; position: absolute; left: -4px; top: 9px; width: 7px; height: 7px; border-radius: 50%; background: var(--cp-accent); }
+.job:hover { border-color: var(--cp-accent); }
+.job + .job { margin-top: 40px; }
+.job-header { display: grid; grid-template-columns: 1fr auto; grid-template-areas: "company dates" "role dates"; align-items: baseline; gap: 3px 16px; margin-bottom: 16px; }
+.job h3 { grid-area: company; font-size: 1.25rem; letter-spacing: -.025em; line-height: 1.4; }
+#oracle-heading { color: var(--cp-oracle); }
+#slice-heading { color: var(--cp-slice); }
+#swiggy-heading { color: var(--cp-swiggy); }
+#hyperverge-heading { color: var(--cp-hyperverge); }
+.role { grid-area: role; font-size: .875rem; color: var(--cp-text-soft); }
+.dates { grid-area: dates; font-size: .75rem; white-space: nowrap; text-align: right; color: var(--cp-text-soft); font-variant-numeric: tabular-nums; }
+.accomplishments { padding-left: 19px; }
+.accomplishments li { padding-left: 4px; }
+.accomplishments li + li { margin-top: 12px; }
+.accomplishments li::marker { font-size: .7em; color: var(--cp-border-strong); }
+strong { font-weight: 700; color: var(--cp-impact); }
+strong.secondary { color: var(--cp-support); }
+.stacks { display: grid; grid-template-columns: 152px minmax(0, 1fr); gap: 16px 24px; font-size: .9375rem; }
+.stacks dt { font-size: .8125rem; font-weight: 600; color: var(--cp-support); }
+.education { display: flex; justify-content: space-between; flex-wrap: wrap; align-items: baseline; gap: 8px 20px; }
+.education h3 { font-size: 1rem; font-weight: 400; }
+.education p { font-size: .875rem; color: var(--cp-text-soft); }
+.theme-controls {
+  position: fixed; z-index: 6;
+  view-transition-name: theme-control;
+  right: max(16px, env(safe-area-inset-right, 0px));
+  bottom: max(24px, env(safe-area-inset-bottom, 0px));
+}
+.theme-toggle { display: flex; align-items: center; justify-content: center; width: 52px; height: 52px; padding: 0; border: 0; border-radius: 50%; background: var(--cp-accent); color: var(--cp-accent-fg); cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: var(--cp-accent-soft); }
+.theme-toggle svg { width: 22px; height: 22px; }
+.theme-toggle .sun { display: none; }
+html[data-theme="dark"] .theme-toggle .sun { display: block; }
+html[data-theme="dark"] .theme-toggle .moon { display: none; }
+.theme-toggle:hover { background: var(--cp-accent-hover); }
+.theme-toggle:focus-visible { outline: 2px solid var(--cp-accent); outline-offset: 4px; }
 
-    @media (max-width: 1099px) {
-      :root { --page-gutter: 1.5rem; }
-      .site-shell { display: block; max-width: 45.5rem; padding-block: 2.5rem; }
-      .identity { position: static; margin-bottom: 2.25rem; }
-      .contacts { max-width: 30rem; margin: 0.75rem auto 0; }
-      .pdf-link { margin-top: 0.75rem; }
-      h1 { font-size: 2.5rem; }
-    }
+/* Fade one rendered page, not inherited colors at every level of the text tree. */
+html:active-view-transition a, html:active-view-transition .job { transition: none; }
+::view-transition { pointer-events: none; }
+::view-transition-old(root), ::view-transition-new(root) {
+  animation-duration: .35s;
+  animation-timing-function: ease-in-out;
+}
+::view-transition-group(theme-control) { animation-duration: 0s; }
+::view-transition-old(theme-control) { display: none; }
+::view-transition-new(theme-control) { animation: none; }
 
-    @media (max-width: 540px) {
-      :root { --body-size: 1rem; --line-height: 1.7; }
-      .branch-art { opacity: 0.75; mask-image: radial-gradient(ellipse, #0001 25%, #0008 65%, #000); }
-      .site-shell { padding-top: 1.25rem; }
-      h1 { font-size: 2.25rem; }
-      .title { margin-top: 0.5rem; }
-      .role-title { font-size: 1.125rem; }
-      .specialties { line-height: 1.5; }
-      .contacts { margin-top: 0; }
-      .pdf-link { margin-top: 0; }
-      .identity { margin-bottom: 0.75rem; }
-      h2 { margin-bottom: 1.125rem; }
-      .job-header { grid-template-columns: 1fr; grid-template-areas: "company" "role" "dates"; gap: 0.125rem; margin-bottom: 0.75rem; }
-      .dates { text-align: left; }
-      .job + .job { margin-top: 2.25rem; }
-      .stacks { grid-template-columns: 1fr; gap: 0.25rem; }
-      .stacks dd + dt { margin-top: 0.75rem; }
-      .education { flex-direction: column; gap: 0.2rem; }
-    }
+@media screen {
+  html { scroll-padding-bottom: calc(112px + env(safe-area-inset-bottom, 0px)); }
+  body:has(.theme-controls:not([hidden])) { padding-bottom: calc(104px + env(safe-area-inset-bottom, 0px)); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  a { transition: background-color .18s, border-color .18s, color .18s; }
+  .job { transition: border-color .25s; }
+}
 
-    @media (max-height: 600px) {
-      .identity { position: static; }
-    }
-
-    @media (prefers-reduced-motion: no-preference) {
-      a { transition: color 150ms, background-color 150ms, border-color 150ms; }
-    }
-
-    @page { size: A4; margin: 14mm; }
-    @media print {
-      :root { --body-size: 10pt; --line-height: 1.45; }
-      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-      .site-shell { display: block; width: 100%; max-width: none; padding: 0; }
-      .identity { position: static; margin-bottom: 1rem; }
-      .skip-link, .pdf-link, .branch-art { display: none; }
-      h1 { font-size: 24pt; }
-      .title { margin-top: 0.25rem; }
-      .role-title, .specialties { display: inline; font-size: 10pt; }
-      .title-divider { display: inline; font-size: 10pt; }
-      .contacts { margin: 0.3rem auto 0; font-size: 9pt; gap: 0.75rem; }
-      .contacts a { min-height: 0; }
-      .contacts svg { display: none; }
-      .contacts .email-link { flex-basis: auto; }
-      a { text-decoration: none; }
-      section + section { margin-top: 1rem; }
-      h2 { margin-bottom: 0.6rem; font-size: 14pt; break-after: avoid; }
-      .job + .job { margin-top: 0.8rem; }
-      .job-header { grid-template-columns: 1fr auto; grid-template-areas: "company dates" "role dates"; margin-bottom: 0.4rem; break-inside: avoid; break-after: avoid; }
-      .job h3 { font-size: 11pt; }
-      .role { font-size: 10pt; }
-      .dates { font-size: 9pt; text-align: right; }
-      .accomplishments li { break-inside: avoid; }
-      .accomplishments li + li { margin-top: 0.3rem; }
-      .stacks { grid-template-columns: 10rem 1fr; gap: 0.3rem 1rem; font-size: 10pt; }
-      .stacks dt { font-size: 9pt; }
-      .stacks dd + dt { margin: 0; }
-      .education { flex-direction: row; }
-      .education h3 { font-size: 11pt; }
-      .education p { font-size: 10pt; }
-      #stacks, #education { break-inside: avoid; }
-    }
+@media (max-width: 1100px) {
+  .site-shell { width: calc(100% - 64px); grid-template-columns: 260px minmax(0, 1fr); gap: 36px; }
+}
+@media (max-width: 900px) {
+  .site-shell { display: block; width: calc(100% - 48px); max-width: 760px; padding-block: 40px 56px; }
+  .identity { position: relative; top: auto; margin-bottom: 40px; padding-top: 8px; }
+  h1 { max-width: none; font-size: 3.75rem; }
+}
+@media (max-width: 540px) {
+  body { line-height: 1.7; }
+  .site-shell { width: calc(100% - 40px); padding-block: 28px 44px; }
+  h1 { font-size: clamp(2.6rem, 11vw, 3.5rem); letter-spacing: -.06em; }
+  .identity { padding-top: 0; }
+  .identity::before { margin-bottom: 24px; }
+  .title { margin-top: 16px; }
+  .role-title { font-size: 1.0625rem; }
+  .specialties { font-size: .875rem; line-height: 1.6; }
+  .contacts { gap: 0 14px; font-size: .8125rem; margin-top: 16px; }
+  .pdf-link { margin-top: 16px; }
+  .job { padding-left: 20px; }
+  .job-header { grid-template-columns: 1fr; grid-template-areas: "company" "role" "dates"; gap: 4px; }
+  .dates { text-align: left; margin-top: 4px; }
+  .accomplishments { padding-left: 17px; }
+  .accomplishments li { padding-left: 2px; }
+  .accomplishments li + li { margin-top: 14px; }
+  .job + .job { margin-top: 32px; }
+  h2 { margin-bottom: 24px; }
+  section + section { margin-top: 40px; }
+  .stacks { grid-template-columns: 1fr; gap: 4px; }
+  .stacks dd + dt { margin-top: 16px; }
+  .education { flex-direction: column; gap: 4px; }
+  .theme-controls { bottom: max(16px, env(safe-area-inset-bottom, 0px)); }
+}
+@media (max-height: 650px) {
+  .identity { position: relative; top: auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+@page { size: A4; margin: 14mm; }
+@media print {
+  html, html[data-theme], html:not([data-theme]) {
+    --cp-impact: #176132;
+    --cp-text: #242424; --cp-text-soft: #5c5c5c; --cp-surface: #ffffff;
+    --cp-border: #dedede; --cp-border-strong: #919191; --cp-support: #24547a;
+    --cp-accent: #9a1a41; --cp-oracle: #9f3428; --cp-slice: #813981;
+    --cp-swiggy: #914716; --cp-hyperverge: #51438f;
+  }
+  body { font-size: 10pt; line-height: 1.45; background: var(--cp-surface); }
+  .ambient-art, .reading-progress, .skip-link, .pdf-link, .theme-controls, .identity::before, .job::before { display: none !important; }
+  .site-shell { display: block; width: 100%; max-width: none; padding: 0; margin: 0; }
+  .identity { position: static; padding: 0 0 12px; margin: 0 0 16px; }
+  h1 { font-size: 26pt; max-width: none; }
+  .title { margin-top: 8px; }
+  .role-title, .specialties { display: inline; font-size: 10pt; }
+  .specialties { margin-left: 8px; }
+  .contacts { margin: 6px 0 0; justify-content: flex-start; font-size: 9pt; gap: 12px; }
+  .contacts a { min-height: 0; }
+  .contacts .email-link { flex-basis: auto; }
+  .contacts svg { display: none; }
+  a { text-decoration: none; }
+  section + section { margin-top: 20px; }
+  h2 { font: 600 12pt "Segoe UI", sans-serif; text-transform: none; letter-spacing: 0; margin-bottom: 10px; break-after: avoid; }
+  h2::after { display: none; }
+  .job { padding: 0; border: 0; margin: 0; }
+  .job + .job { margin-top: 16px; }
+  .job-header { grid-template-columns: 1fr auto; grid-template-areas: "company dates" "role dates"; margin-bottom: 6px; gap: 2px 12px; break-inside: avoid; break-after: avoid; }
+  .job h3 { font-size: 11pt; }
+  .role { font-size: 10pt; }
+  .dates { font-size: 9pt; text-align: right; margin: 0; }
+  .accomplishments { font-size: 10pt; line-height: 1.45; padding-left: 16px; }
+  .accomplishments li { break-inside: avoid; }
+  .accomplishments li + li { margin-top: 4px; }
+  .stacks { grid-template-columns: 128px 1fr; gap: 4px 12px; font-size: 10pt; }
+  .stacks dd + dt { margin-top: 0; }
+  .stacks dt { font-size: 9pt; }
+  .education h3 { font-size: 10pt; }
+  #stacks, #education { break-inside: avoid; }
+}
   </style>
 </head>
 <body>
-  <canvas id="branch-art" class="branch-art" aria-hidden="true"></canvas>
+  <canvas id="ambient-art" class="ambient-art" aria-hidden="true"></canvas>
+  <div class="reading-progress" aria-hidden="true"></div>
   <a class="skip-link" href="#experience">Skip to experience</a>
+
   <div class="site-shell">
     <header class="identity">
       <h1>Sai Praneeth</h1>
@@ -231,8 +384,8 @@
       <address class="contacts" aria-label="Contact information">
         <a class="email-link" href="mailto:c.saipraneeth888@gmail.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>c.saipraneeth888@gmail.com</a>
         <a href="tel:8309571609"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 16.5v3a1.5 1.5 0 0 1-1.7 1.5A18.4 18.4 0 0 1 3 4.7 1.5 1.5 0 0 1 4.5 3h3a1.5 1.5 0 0 1 1.5 1.3c.1 1 .4 1.9.7 2.8a1.5 1.5 0 0 1-.3 1.6l-1.3 1.4a15 15 0 0 0 5.8 5.8l1.4-1.3a1.5 1.5 0 0 1 1.6-.3c.9.3 1.8.6 2.8.7a1.5 1.5 0 0 1 1.3 1.5Z"/></svg>8309571609</a>
-        <a href="https://github.com/mrMadFox"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>GitHub</a>
-        <a href="https://www.linkedin.com/in/sai-praneeth-334195160/"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>LinkedIn</a>
+        <a href="https://github.com/bypraneeth" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>GitHub</a>
+        <a href="https://www.linkedin.com/in/sai-praneeth-334195160/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>LinkedIn</a>
       </address>
       <a class="pdf-link" href="SAI_PRANEETH_7YOE.pdf" target="_blank" rel="noopener">
         <svg viewBox="0 0 32 36" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
@@ -334,264 +487,220 @@
       </section>
     </main>
   </div>
-  <script id="branch-animation">
-    (() => {
-      const canvas = document.getElementById('branch-art');
-      if (!canvas) return;
-      const context = canvas.getContext('2d');
-      if (!context) return;
 
-      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-      const duration = 18000;
-      const random = (min, max) => min + Math.random() * (max - min);
-      let width = 0;
-      let height = 0;
-      let pixelRatio = 1;
-      let branches = [];
-      let reach = 1;
-      let elapsed = 0;
-      let previousTime = null;
-      let frame = 0;
-      let resizeTimer;
-      let pageActive = true;
-      const pointer = { x: 0, y: 0, active: false };
-      const motion = { x: 0, y: 0, strength: 0, swayX: 0, swayY: 0, scroll: 0 };
-      let scrollImpulse = 0;
-      let lastScroll = window.scrollY;
-      const clamp = (value, limit) => Math.max(-limit, Math.min(limit, value));
-      const allowed = () => !reducedMotion.matches && !document.hidden && pageActive;
-      const moving = () => motion.x !== pointer.x || motion.y !== pointer.y ||
-        motion.strength !== Number(pointer.active) ||
-        motion.swayX !== (pointer.active ? (pointer.x / width - 0.5) * 24 : 0) ||
-        motion.swayY !== (pointer.active ? (pointer.y / height - 0.5) * 16 : 0) ||
-        motion.scroll !== 0 || scrollImpulse !== 0;
+  <div class="theme-controls" hidden>
+    <button class="theme-toggle" type="button" aria-label="Switch to dark theme">
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 14A9 9 0 0 1 10 3.5 9 9 0 1 0 20.5 14Z"/></svg>
+    </button>
+  </div>
 
-      function clearInteraction() {
-        pointer.active = false;
-        scrollImpulse = 0;
-        lastScroll = window.scrollY;
-      }
+  <script>
+(() => {
+  const canvas = document.getElementById('ambient-art');
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    console.warn('Decorative canvas is unavailable; resume content remains accessible.');
+    return;
+  }
 
-      function easeMotion(delta) {
-        const blend = 1 - Math.exp(-Math.min(delta, 64) / 100);
-        const approach = (value, target) => Math.abs(target - value) < 0.01
-          ? target : value + (target - value) * blend;
-        motion.x = approach(motion.x, pointer.x);
-        motion.y = approach(motion.y, pointer.y);
-        motion.strength = approach(motion.strength, Number(pointer.active));
-        motion.swayX = approach(motion.swayX, pointer.active ? (pointer.x / width - 0.5) * 24 : 0);
-        motion.swayY = approach(motion.swayY, pointer.active ? (pointer.y / height - 0.5) * 16 : 0);
-        motion.scroll = approach(motion.scroll, scrollImpulse);
-        scrollImpulse *= Math.exp(-Math.min(delta, 64) / 170);
-        if (Math.abs(scrollImpulse) < 0.01) scrollImpulse = 0;
-      }
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const progress = document.querySelector('.reading-progress');
+  const identity = document.querySelector('.identity');
+  let accent = getComputedStyle(canvas).color;
+  const tau = Math.PI * 2;
+  let artX = 0, artY = 0;
+  let width = 0;
+  let height = 0;
+  let frame = 0;
+  let last = 0;
+  let alive = true;
+  let lastScroll = scrollY;
+  let scrollTarget = 0;
+  let scrollMotion = 0;
+  let burstStart = 0;
+  let burstX = 0;
+  let burstY = 0;
+  const pointer = { x: .5, y: .45 };
+  const motion = { x: .5, y: .45 };
+  const clamp = (v, low, high) => Math.max(low, Math.min(high, v));
 
-      function tracePoint(x, y, move = false) {
-        if (motion.strength || motion.swayX || motion.swayY || motion.scroll) {
-          const dx = x - motion.x;
-          const dy = y - motion.y;
-          const influence = motion.strength
-            ? Math.max(0, 1 - Math.hypot(dx, dy) / Math.min(300, width * 0.7)) : 0;
-          const force = influence * influence * motion.strength * 0.32;
-          // The same deformation at shared coordinates keeps every fork connected.
-          const flex = Math.max(0, Math.min(1, Math.min(x, width - x, y, height - y) / 70));
-          x += (motion.swayX + dx * force) * flex;
-          y += (motion.swayY + motion.scroll + dy * force) * flex;
+  function ellipse(x, y, rx, ry, rotation, alpha) {
+    ctx.beginPath();
+    ctx.ellipse(x, y, Math.max(1, rx), Math.max(1, ry), rotation, 0, tau);
+    ctx.globalAlpha = alpha;
+    ctx.stroke();
+  }
+
+  function dot(x, y, radius, alpha) {
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, tau);
+    ctx.globalAlpha = alpha;
+    ctx.fill();
+  }
+
+  function orbit(x, y, rx, ry, rotation, angle, radius) {
+    ellipse(x, y, rx, ry, rotation, .15);
+    const dx = Math.cos(angle) * rx, dy = Math.sin(angle) * ry;
+    const cos = Math.cos(rotation), sin = Math.sin(rotation);
+    dot(x + dx * cos - dy * sin, y + dx * sin + dy * cos, radius, .42);
+  }
+
+  function render(now = performance.now()) {
+    ctx.clearRect(0, 0, width, height);
+    ctx.strokeStyle = ctx.fillStyle = accent;
+    ctx.lineWidth = 1;
+    const mx = (motion.x - .5) * 2;
+    const my = (motion.y - .5) * 2;
+    const phase = scrollMotion * .0007;
+    const centerX = artX + mx * 24;
+    const centerY = artY + my * 20;
+
+    for (let i = 0; i < 7; i++) {
+      const r = 130 + i * 30;
+      const rotation = -.55 + mx * .18 + i * .04;
+      orbit(centerX, centerY, r, r * .56, rotation, i * 1.4 + mx * .35 + phase, i % 2 ? 2 : 3);
+    }
+    if (burstStart && !reduced.matches) {
+      const age = now - burstStart;
+      if (age < 1200) {
+        for (let i = 0; i < 3; i++) {
+          const r = age * .11 + i * 15;
+          ellipse(burstX, burstY, r, r, 0, (1 - age / 1200) * .25);
         }
-        if (move) context.moveTo(x, y);
-        else context.lineTo(x, y);
+      } else {
+        burstStart = 0;
       }
+    }
+    ctx.globalAlpha = 1;
+  }
 
-      function grow(x, y, heading, bend, length, depth, start, color) {
-        const points = [{ x, y, heading }];
-        const steps = Math.max(12, Math.ceil(length / 5));
-        const step = length / steps;
-        const phase = random(0, Math.PI * 2);
-        let curl = random(-0.008, 0.008);
-        for (let index = 1; index <= steps; index++) {
-          // Offshoots share their parent's tangent, then curve away from it.
-          heading += bend * Math.exp(-index / 6) / 6;
-          curl = curl * 0.88 + random(-0.006, 0.006);
-          heading += curl + Math.sin(index / 9 + phase) * 0.014;
-          x += Math.cos(heading) * step;
-          y += Math.sin(heading) * step;
-          points.push({ x, y, heading });
-          if (x < -45 || x > width + 45 || y < -45 || y > height + 45) break;
-        }
-        const distance = (points.length - 1) * step;
-        branches.push({ points, start, distance, color,
-          width: Math.max(0.35, 0.95 * Math.pow(0.72, depth)), alpha: random(0.23, 0.33) });
-        reach = Math.max(reach, start + distance);
-        if (depth === 4 || points.length < 8) return;
+  function allowed() {
+    return alive && !document.hidden && !reduced.matches;
+  }
 
-        const side = Math.random() < 0.5 ? -1 : 1;
-        for (let index = 0; index < 3; index++) {
-          const fraction = 0.35 + index * 0.23 + random(-0.04, 0.04);
-          const pointIndex = Math.floor((points.length - 1) * fraction);
-          const origin = points[pointIndex];
-          grow(origin.x, origin.y, origin.heading,
-            side * (index % 2 ? -1 : 1) * random(0.45, 0.85),
-            length * random(0.64, 0.8) * (1 - fraction * 0.4), depth + 1,
-            start + pointIndex * step, color);
-        }
-      }
+  function wake() {
+    if (!frame && allowed()) frame = requestAnimationFrame(tick);
+  }
 
-      function draw(progress) {
-        context.clearRect(0, 0, width, height);
-        const distance = (1 - (1 - progress) ** 2) * reach;
-        // ponytail: redraw at most 1089 finite branches; cache paths if this artwork grows.
-        for (const branch of branches) {
-          const amount = Math.min(1, (distance - branch.start) / branch.distance);
-          if (amount <= 0) continue;
-          const last = amount * (branch.points.length - 1);
-          const whole = Math.floor(last);
-          context.beginPath();
-          tracePoint(branch.points[0].x, branch.points[0].y, true);
-          for (let index = 1; index <= whole; index++) {
-            tracePoint(branch.points[index].x, branch.points[index].y);
-          }
-          if (whole < branch.points.length - 1) {
-            const a = branch.points[whole];
-            const b = branch.points[whole + 1];
-            tracePoint(a.x + (b.x - a.x) * (last - whole),
-              a.y + (b.y - a.y) * (last - whole));
-          }
-          context.strokeStyle = branch.color;
-          context.globalAlpha = branch.alpha;
-          context.lineWidth = branch.width;
-          context.stroke();
-        }
-      }
+  function tick(now) {
+    frame = 0;
+    if (!allowed()) return;
+    if (last && now - last < 32) {
+      wake();
+      return;
+    }
+    const dt = last ? Math.min(now - last, 64) : 32;
+    last = now;
+    const ease = 1 - Math.exp(-dt / 115);
+    motion.x += (pointer.x - motion.x) * ease;
+    motion.y += (pointer.y - motion.y) * ease;
+    scrollMotion += (scrollTarget - scrollMotion) * ease;
+    render(now);
+    // Paint only while input is settling; an idle page has no animation loop.
+    if (Math.abs(pointer.x - motion.x) + Math.abs(pointer.y - motion.y) > .0005 ||
+        Math.abs(scrollTarget - scrollMotion) > .2 || burstStart) {
+      wake();
+    } else {
+      last = 0;
+    }
+  }
 
-      function sync() {
-        cancelAnimationFrame(frame);
-        frame = 0;
-        previousTime = null;
-        wake();
-      }
+  function updateProgress() {
+    const range = document.documentElement.scrollHeight - innerHeight;
+    progress.style.transform = 'scaleX(' + (range > 0 ? clamp(scrollY / range, 0, 1) : 0) + ')';
+  }
 
-      function wake() {
-        if (!frame && allowed() && (elapsed < duration || moving())) {
-          frame = requestAnimationFrame(tick);
-        }
-      }
+  function resize() {
+    width = innerWidth;
+    height = innerHeight;
+    const profile = identity.getBoundingClientRect();
+    artX = profile.left + profile.width * .45;
+    artY = clamp(profile.top + profile.height * .48, 160, height * .5);
+    const ratio = Math.min(devicePixelRatio || 1, 1.5, Math.sqrt(3000000 / (width * height)));
+    const pixelWidth = Math.round(width * ratio);
+    const pixelHeight = Math.round(height * ratio);
+    if (canvas.width !== pixelWidth) canvas.width = pixelWidth;
+    if (canvas.height !== pixelHeight) canvas.height = pixelHeight;
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    updateProgress();
+    render();
+  }
 
-      function tick(time) {
-        frame = 0;
-        if (!allowed()) {
-          previousTime = null;
-          return;
-        }
-        const delta = previousTime === null ? 0 : Math.max(0, time - previousTime);
-        elapsed = Math.min(duration, elapsed + delta);
-        previousTime = time;
-        easeMotion(delta);
-        draw(elapsed / duration);
-        if (elapsed < duration || moving()) frame = requestAnimationFrame(tick);
-        else sync();
-      }
+  function updatePointer(event) {
+    if (reduced.matches) return;
+    pointer.x = clamp(event.clientX / width, 0, 1);
+    pointer.y = clamp(event.clientY / height, 0, 1);
+    wake();
+  }
 
-      function reset(force = false) {
-        const bounds = canvas.getBoundingClientRect();
-        const nextWidth = Math.max(1, Math.round(bounds.width || window.innerWidth));
-        const nextHeight = Math.max(1, Math.round(bounds.height || window.innerHeight));
-        const nextRatio = Math.min(window.devicePixelRatio || 1, 2);
-        const hasLeftSpace = nextWidth >= 1100 && nextHeight > 600;
-        if (!force && hasLeftSpace === (width >= 1100 && height > 600) && Math.abs(nextWidth - width) < 40 &&
-            Math.abs(nextHeight - height) < Math.max(48, height * 0.1) && nextRatio === pixelRatio) return;
-        width = nextWidth;
-        height = nextHeight;
-        pixelRatio = nextRatio;
-        clearInteraction();
-        pointer.x = motion.x = width / 2;
-        pointer.y = motion.y = height / 2;
-        motion.strength = motion.swayX = motion.swayY = motion.scroll = 0;
-        canvas.width = Math.round(width * pixelRatio);
-        canvas.height = Math.round(height * pixelRatio);
-        context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-        context.lineCap = 'round';
-        context.lineJoin = 'round';
-        branches = [];
-        reach = 1;
-        const mobile = width < 760;
-        const length = mobile ? Math.min(175, width * 0.43)
-          : 1.15 * Math.min(285, width * 0.22, height * 0.34);
-        const origins = mobile
-          ? [[-6, height * 0.13, 0.28], [width + 6, height * 0.36, 2.9],
-            [-6, height * 0.66, -0.36], [width + 6, height * 0.93, 3.65]]
-          : [[-6, height * 0.14, 0.35], [width * 0.2, -6, 1.25],
-            [width + 6, height * 0.24, 2.9], [-6, height * 0.48, 0.04],
-            [width + 6, height * 0.57, 3.4], [-6, height * 0.86, -0.42],
-            [width * 0.79, height + 6, -1.95], [width + 6, height * 0.92, 3.65]];
-        if (hasLeftSpace) origins.push([width * 0.28, height + 6, -1.8]);
-        origins.forEach(([x, y, heading], index) => {
-          grow(x, y, heading + random(-0.18, 0.18), random(-0.4, 0.4),
-            length * random(0.83, 1.08), 0, random(0, 65),
-            index % 2 ? '#74a99c' : '#89b4a0');
-        });
-        elapsed = reducedMotion.matches ? duration : 0;
-        draw(elapsed / duration);
-        sync();
-      }
+  function resetPointer() {
+    pointer.x = .5;
+    pointer.y = .45;
+    wake();
+  }
 
-      reducedMotion.addEventListener('change', () => {
-        clearInteraction();
-        motion.x = pointer.x;
-        motion.y = pointer.y;
-        motion.strength = motion.swayX = motion.swayY = motion.scroll = 0;
-        elapsed = reducedMotion.matches ? duration : 0;
-        draw(elapsed / duration);
-        sync();
-      });
-      function followPointer(event) {
-        if (!allowed() || event.isPrimary === false) return;
-        pointer.x = Math.max(0, Math.min(width, event.clientX));
-        pointer.y = Math.max(0, Math.min(height, event.clientY));
-        pointer.active = true;
-        wake();
-      }
-      function releasePointer() {
-        pointer.active = false;
-        wake();
-      }
-      window.addEventListener('pointermove', followPointer, { passive: true });
-      window.addEventListener('pointerdown', followPointer, { passive: true });
-      window.addEventListener('pointerup', event => {
-        if (event.pointerType !== 'mouse' && event.isPrimary !== false) releasePointer();
-      }, { passive: true });
-      window.addEventListener('pointercancel', event => {
-        if (event.isPrimary !== false) releasePointer();
-      }, { passive: true });
-      document.addEventListener('pointerleave', releasePointer, { passive: true });
-      window.addEventListener('blur', releasePointer);
-      window.addEventListener('scroll', () => {
-        const delta = window.scrollY - lastScroll;
-        lastScroll = window.scrollY;
-        if (!allowed()) return;
-        scrollImpulse = clamp(scrollImpulse - clamp(delta, 100) * 0.18, 24);
-        wake();
-      }, { passive: true });
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) clearInteraction();
-        sync();
-      });
-      window.addEventListener('resize', () => {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => reset(), 180);
-      });
-      window.addEventListener('pagehide', () => {
-        pageActive = false;
-        clearInteraction();
-        clearTimeout(resizeTimer);
-        sync();
-      });
-      window.addEventListener('pageshow', () => {
-        pageActive = true;
-        reset();
-        sync();
-      });
-      reset(true);
-    })();
+  function pause() {
+    cancelAnimationFrame(frame);
+    frame = 0;
+    last = 0;
+    burstStart = 0;
+  }
+
+  document.addEventListener('portfolio-theme', () => {
+    accent = getComputedStyle(canvas).color;
+    render();
+  });
+
+  window.addEventListener('pointermove', updatePointer, { passive: true });
+  window.addEventListener('pointerdown', event => {
+    if (reduced.matches) return;
+    updatePointer(event);
+    burstX = event.clientX;
+    burstY = event.clientY;
+    burstStart = performance.now();
+  }, { passive: true });
+  window.addEventListener('pointerup', event => {
+    if (event.pointerType !== 'mouse') resetPointer();
+  }, { passive: true });
+  window.addEventListener('pointercancel', resetPointer, { passive: true });
+  document.documentElement.addEventListener('pointerleave', resetPointer, { passive: true });
+  window.addEventListener('blur', resetPointer);
+  window.addEventListener('focusin', event => {
+    if (reduced.matches || !(event.target instanceof HTMLElement)) return;
+    const bounds = event.target.getBoundingClientRect();
+    updatePointer({ clientX: bounds.x + bounds.width / 2, clientY: bounds.y + bounds.height / 2 });
+  });
+  window.addEventListener('scroll', () => {
+    updateProgress();
+    if (reduced.matches) return;
+    scrollTarget += clamp(scrollY - lastScroll, -180, 180);
+    lastScroll = scrollY;
+    wake();
+  }, { passive: true });
+  window.addEventListener('resize', resize, { passive: true });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) pause();
+    else {
+      lastScroll = scrollY;
+      resize();
+    }
+  });
+  window.addEventListener('pagehide', () => { alive = false; pause(); });
+  window.addEventListener('pageshow', () => {
+    alive = true;
+    lastScroll = scrollY;
+    resize();
+  });
+  reduced.addEventListener('change', () => {
+    pause();
+    pointer.x = motion.x = .5;
+    pointer.y = motion.y = .45;
+    lastScroll = scrollY;
+    render();
+  });
+  resize();
+})();
   </script>
 </body>
 </html>
